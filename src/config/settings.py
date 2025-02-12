@@ -10,6 +10,7 @@ class AppSettings(BaseSettings):
 	app_database_user: str
 	app_database_password: str
 	app_database_db: str
+	app_database_url: str
 	app_semaphore_url: str
 	app_semaphore_key: str
 	app_semaphore_sender_name: str

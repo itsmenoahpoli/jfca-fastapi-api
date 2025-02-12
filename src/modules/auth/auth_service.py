@@ -19,3 +19,5 @@ class AuthService:
 			"user": auth_encode["user"],
 			"token": token
 		}
+	
+auth_service = AuthService()

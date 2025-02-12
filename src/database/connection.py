@@ -2,9 +2,8 @@ from pymongo import mongo_client
 from config.settings import app_settings
 
 db_name = app_settings.app_database_db
-
 db_client = mongo_client.MongoClient(
-host=app_settings.app_database_url
+	host=app_settings.app_database_url
 )
 
 def db_connect():
