@@ -1,0 +1,11 @@
+{
+  "name": "jfca-attendance-system-backend",
+  "version": "1.0.0",
+  "description": "FastAPI backend application for attendance system UI app",
+  "main": "index.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Policarpio",
+  "license": "ISC"
+}
