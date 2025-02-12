@@ -1,3 +1,4 @@
+import requests, urllib
 from config.settings import app_settings
 
 class SmsLibrary:
