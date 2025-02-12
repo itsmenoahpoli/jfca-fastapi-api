@@ -8,7 +8,6 @@ auth_router = APIRouter(
   tags=["Auth API"]
 )
 
-
 auth_service = AuthService()
 
 @auth_router.post('/signin')
