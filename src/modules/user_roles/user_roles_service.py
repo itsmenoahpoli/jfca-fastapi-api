@@ -1,10 +1,10 @@
-from database import entities
-from modules.base_repository import BaseRepository
+from src.database import entities
+from src.modules.base_repository import BaseRepository
 
 class UserRolesService(BaseRepository):
-    def __init__():
-        super().__init__(entity=entities.UserRole)
-        print('UserRolesService(BaseRepository(entity=entities.UserRole)) initialized')
+    def __init__(self):
+        super().__init__(entity=entities.UserRoleEntity)
+        
         
 
 user_roles_service = UserRolesService()

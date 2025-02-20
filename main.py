@@ -18,7 +18,3 @@ app.add_middleware(
 )
 
 initialize_api_routes(app)
-
-@app.get('/')
-def index():
-	return "SYSTEM_ONLINE"

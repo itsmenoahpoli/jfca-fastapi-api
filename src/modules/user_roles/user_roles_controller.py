@@ -1,1 +1,34 @@
+from fastapi import APIRouter, HTTPException, status
+from typing import List
 from .user_roles_service import user_roles_service
+from .user_roles_dto import UserRoleDTO
+from src.utils.http_utils import HTTPResponse
+
+user_roles_router = APIRouter(
+	prefix="/v1/api/user-roles",
+	tags=["User Roles"]
+)
+
+@user_roles_router.get('/')
+async def get_list_handler():
+	result = user_roles_service.get_list_data()
+	
+	return HTTPResponse(
+		detail=result,
+		status_code=status.HTTP_200_OK
+	)
+
+@user_roles_router.post('/')
+async def create_list_handler(payload: UserRoleDTO):
+	result = user_roles_service.create_data(payload.model_dump(), 'name')
+
+	if result == "ALREADY_EXIST":
+		return HTTPResponse(
+			detail=result,
+			status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+		)
+	
+	return HTTPResponse(
+		detail=result,
+		status_code=status.HTTP_201_CREATED
+	)
