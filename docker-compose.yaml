@@ -1,0 +1,17 @@
+services:
+    jcfa-app:
+        build: .
+        container_name: jcfa-app
+        restart: on-failure
+        ports:
+            - "4000:4000"
+        environment:
+            - APP_DEBUG=${APP_DEBUG}
+            - APP_API_KEY=${APP_API_KEY}
+            - APP_DATABASE_DB=${APP_DATABASE_DB}
+            - APP_DATABASE_URL=${APP_DATABASE_URL}
+            - APP_SEMAPHORE_URL=${APP_SEMAPHORE_URL}
+            - APP_SEMAPHORE_KEY=${APP_SEMAPHORE_KEY}
+            - APP_SEMAPHORE_SENDER_NAME=${APP_SEMAPHORE_SENDER_NAME}
+        volumes:
+            - .:/app

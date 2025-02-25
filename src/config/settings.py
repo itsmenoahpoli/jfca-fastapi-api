@@ -6,9 +6,6 @@ load_dotenv(find_dotenv(".env"))
 class AppSettings(BaseSettings):
 	app_debug: bool = True
 	app_api_key: str
-	app_database_host: str
-	app_database_user: str
-	app_database_password: str
 	app_database_db: str
 	app_database_url: str
 	app_semaphore_url: str
