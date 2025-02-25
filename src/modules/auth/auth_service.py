@@ -1,15 +1,20 @@
 import time
 import jwt
 from src.config.settings import app_settings
+from src.modules.users.users_service import users_service
 
 class AuthService:
 	__JWT_SECRET_KEY = app_settings.app_api_key
 
-	@classmethod
-	def authenticate_credentials(self):
+	def authenticate_credentials(self, credentials):
+		user = users_service.find_by_email(credentials['email'])
+
+		if user is None or user['is_enabled'] is False:
+			return 	None
+
 		auth_encode = {
 			"user": {
-				"name": "johndoe"
+				"name": user['name']
 			},
 			"expires": time.time() + 5 * 3600
 		}

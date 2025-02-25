@@ -1,11 +1,11 @@
-from fastapi import APIRouter, HTTPException, status
-from typing import List
+from fastapi import APIRouter, status
 from .user_roles_service import user_roles_service
 from .user_roles_dto import UserRoleDTO
 from src.utils.http_utils import HTTPResponse
+from src.constants.errors_constant import ErrorTypes
 
 user_roles_router = APIRouter(
-	prefix="/v1/api/user-roles",
+	prefix="/user-roles",
 	tags=["User Roles"]
 )
 
@@ -40,7 +40,7 @@ async def delete_one_handler(id: str):
 async def create_list_handler(payload: UserRoleDTO):
 	result = user_roles_service.create_data(payload.model_dump(), 'name')
 
-	if result == "ALREADY_EXIST":
+	if result == ErrorTypes.ALREADY_EXISTS:
 		return HTTPResponse(
 			detail=result,
 			status_code=status.HTTP_422_UNPROCESSABLE_ENTITY

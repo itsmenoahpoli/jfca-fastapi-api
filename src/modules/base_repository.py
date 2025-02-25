@@ -1,24 +1,25 @@
 import datetime
 from pymongo.collection import Collection
 from bson import ObjectId
+from src.constants.errors_constant import ErrorTypes
 
 class BaseRepository:
 	def __init__(self, entity: Collection):
 		self._entity = entity
 
 
-	def __list_serializer(self, data: list):
-		return [self.__single_serializer(item) for item in data]
+	def _list_serializer(self, data: list):
+		return [self._single_serializer(item) for item in data]
 
-	def __single_serializer(self, data: dict):
+	def _single_serializer(self, data):
 		if data:
 			data["id"] = str(data["_id"])
 			del data["_id"]
 	
 		return data
 	
-	def __check_if_exists(self, data: dict, field_to_check: str):
-		if len(self.__list_serializer(self._entity.find({ field_to_check: data[field_to_check] }))) > 0:
+	def __check_if_exists(self, data, field_to_check):
+		if len(self._list_serializer(self._entity.find({ field_to_check: data[field_to_check] }))) > 0:
 			return True
 		
 		return False
@@ -26,19 +27,19 @@ class BaseRepository:
 	def get_list_data(self):
 		result = self._entity.find()
 
-		return self.__list_serializer(result)
+		return self._list_serializer(result)
 
 	def get_single_data(self, id):
 		result = self._entity.find_one({ "_id": ObjectId(id) })
 
 		if result == None:
-			return "NOT_FOUND"
+			return ErrorTypes.NOT_FOUND_ERROR
 		
-		return self.__single_serializer(result)
+		return self._single_serializer(result)
 
-	def create_data(self, data, flag_unique_by: str = None):
+	def create_data(self, data, flag_unique_by = None):
 		if flag_unique_by and self.__check_if_exists(data, flag_unique_by):
-			return 'ALREADY_EXIST'
+			return ErrorTypes.ALREADY_EXISTS
 
 		data["createdAt"] = datetime.datetime.now(datetime.timezone.utc)
 		data["updatedAt"] = datetime.datetime.now(datetime.timezone.utc)
@@ -48,7 +49,7 @@ class BaseRepository:
 		
 		return data
 
-	def update_data(self, id: str, data: dict):
+	def update_data(self, id, data):
 		result = self._entity.update_one({ "_id": ObjectId(id) }, { "$set": data })
 
 		if result.modified_count == 0:
@@ -56,13 +57,18 @@ class BaseRepository:
 		
 		updated_data = self.get_single_data(id)
 
-		return self.__single_serializer(updated_data)
+		return self._single_serializer(updated_data)
 		
 
 
-	def delete_data(self, id: str):
-		if self.get_single_data(id) == "NOT_FOUND":
-			return "NOT_FOUND"
+	def delete_data(self, id, is_soft_delete = False):
+		if self.get_single_data(id) == ErrorTypes.NOT_FOUND_ERROR:
+			return ErrorTypes.NOT_FOUND_ERROR
+		
+		if is_soft_delete:
+			self.update_data(id, {
+				"deletedAt": datetime.datetime.now(datetime.timezone.utc)
+			})
 		
 		result = self._entity.delete_one({ "_id": ObjectId(id) })
 

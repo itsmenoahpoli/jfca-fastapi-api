@@ -3,11 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.routers.router import initialize_api_routes
 
 app = FastAPI(
-	title="JFCA API",
+	title="JCFA API & Database",
 	description="Main core data server",
-	contact={
-		"name": "@itznoahdev"
-	}
 )
 
 app.add_middleware(
