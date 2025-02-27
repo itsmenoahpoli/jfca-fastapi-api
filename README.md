@@ -4,21 +4,27 @@
   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn_3MFhCzXcwI3GWIDTsWJg2HXDTG7TwGovA&s" alt="FastAPI logo" style="height: 100px; width: 100px;" />
 </div>
 
+<h1 align="center">JCFA Attendance Monitoring System</h1>
+
 <br />
 
 Tech used:
 
 -   FastAPI
--   MySQL
+-   MongoDB
 -   PyJWT
 -   SQLAlchemy
+-   Docker
+-   Docker Compose
+-   Semaphore (SMS Notifications)
+-   Railway Cloud (Cloud server & deployments)
 
 <br />
 
 You must have these installed on your machine:
 
 -   [x] Python 3.11.\*
--   [x] MySQL
+-   [x] MongoDB
 -   [x] Visual Studio Code or PyCharm
 -   [x] Docker Desktop
 
@@ -51,9 +57,17 @@ fastapi dev app/main.py
 
 ```bash
 
+# To build docker container
 docker compose build
 
+# To start docker container
 docker compose up -d
+
+# To stop docker container
+docker compose stop
+
+## To stop and remove docker container
+docker compose down
 
 ```
 
