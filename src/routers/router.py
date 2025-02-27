@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi_limiter.depends import RateLimiter
 from src.modules.auth.auth_controller import auth_router
 from src.modules.user_roles.user_roles_controller import user_roles_router
 from src.modules.sections.sections_controller import sections_router
@@ -11,4 +10,4 @@ app_routers = [auth_router, user_roles_router, sections_router, students_router]
 
 def initialize_api_routes(app: FastAPI):
     for router in app_routers:
-        app.include_router(router=router, prefix=API_PREFIX_V1, dependencies=[RateLimiter(times=60, seconds=60)])
+        app.include_router(router=router, prefix=API_PREFIX_V1)
