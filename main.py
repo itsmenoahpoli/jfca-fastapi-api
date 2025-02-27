@@ -5,6 +5,7 @@ from src.routers.router import initialize_api_routes
 app = FastAPI(
 	title="JCFA API & Database",
 	description="Main core data server",
+	redoc_url=None
 )
 
 app.add_middleware(
