@@ -1,13 +1,13 @@
-import logging as sms_logging
+import logging as mail_logging
 import os
 
 log_dir = "logs"
-log_file = os.path.join(log_dir, "sms.txt")
+log_file = os.path.join(log_dir, "mail.txt")
 os.makedirs(log_dir, exist_ok=True)
 
-sms_logging.basicConfig(
+mail_logging.basicConfig(
     filename=log_file,
-    level=sms_logging.INFO,
+    level=mail_logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
