@@ -1,0 +1,1 @@
+2025-02-28 02:12:19,741 - INFO - Mail:Test Mail sent to user@domain.com

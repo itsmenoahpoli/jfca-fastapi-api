@@ -3,9 +3,8 @@ from fastapi import HTTPException, status
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from src.config.settings import app_settings
-from src.utils.logging_utils.sms import sms_logging
+from src.utils.logging_utils import sms_logger, mail_logger
 from src.constants.mail_constant import MailDefauls
-from src.constants.errors_constant import ErrorTypes
 
 class NotificationsService:
 	__SEMAPHORE_API_KEY = app_settings.app_semaphore_key
@@ -30,7 +29,7 @@ class NotificationsService:
 			url = self.__SEMAPHORE_URL + urllib.parse.urlencode(params)
 			response = requests.post(url)
 			
-			sms_logging.info(response.text)
+			sms_logger.info(response.text)
 			print(f"Response: {response.text}")
 
 			response.raise_for_status()
@@ -41,10 +40,6 @@ class NotificationsService:
 		except Exception as e:
 			print(f"An error occurred: {e}")
 			return None
-			# raise HTTPException(
-			# 	status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-			# 	detail=ErrorTypes.SMS_SENDING_FAILED
-			# )
 			
 
 	def send_email(self, recipient, subject = MailDefauls.DEFAULT_SUBJECT, message = ""):
@@ -62,15 +57,12 @@ class NotificationsService:
 
 			mail_server.send_message(mail)
 			mail_server.quit()
+			mail_logger.info(f"Mail:{subject} sent to {recipient}")
 
 			return True
 		except Exception as e:
 			print(f"An error occurred: {e}")
 			return None
-			# raise HTTPException(
-			# 	status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-			# 	detail=ErrorTypes.MAIL_SENDING_FAILED
-			# )
 
 
 
