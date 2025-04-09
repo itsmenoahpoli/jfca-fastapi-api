@@ -37,7 +37,7 @@ async def delete_one_handler(id: str):
 	)
 
 @user_roles_router.post('/')
-async def create_list_handler(payload: UserRoleDTO):
+async def create_handler(payload: UserRoleDTO):
 	result = user_roles_service.create_data(payload.model_dump(), 'name')
 
 	if result == ErrorTypes.ALREADY_EXISTS:

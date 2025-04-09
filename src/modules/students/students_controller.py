@@ -37,7 +37,7 @@ async def delete_one_handler(id):
 	)
 
 @students_router.patch('/{id}')
-async def create_list_handler(payload: StudentDTO, id):
+async def update_handler(payload: StudentDTO, id):
 	result = students_service.update_data(id, payload.model_dump())
 
 	if result == ErrorTypes.ALREADY_EXISTS:
@@ -52,7 +52,7 @@ async def create_list_handler(payload: StudentDTO, id):
 	)
 
 @students_router.post('/')
-async def create_list_handler(payload: StudentDTO):
+async def create_handler(payload: StudentDTO):
 	result = students_service.create_data(payload.model_dump(), 'name')
 
 	if result == ErrorTypes.ALREADY_EXISTS:

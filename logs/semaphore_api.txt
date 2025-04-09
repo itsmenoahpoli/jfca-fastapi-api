@@ -1,1 +1,115 @@
 2025-02-27 07:42:58,135 - INFO - [{"message_id":242291793,"user_id":3415,"user":"patrickpolicarpio08@gmail.com","account_id":3280,"account":"NoahDev","recipient":"639620636535","message":"Good day \n This is a test sms from JCFA Server \n Thank you!","sender_name":"JCFAAMS","network":"Unknown","status":"Pending","type":"Single","source":"Api","created_at":"2025-02-27 15:42:57","updated_at":"2025-02-27 15:42:57"}]
+2025-04-09 14:04:14,295 - INFO - Will watch for changes in these directories: ['C:\\Users\\patri\\OneDrive\\Desktop\\My Projects\\Freelance\\JCFA\\jcfa-backend-api']
+2025-04-09 14:04:14,297 - INFO - Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2025-04-09 14:04:14,298 - INFO - Started reloader process [21092] using WatchFiles
+2025-04-09 14:04:15,713 - INFO - Started server process [28296]
+2025-04-09 14:04:15,715 - INFO - Waiting for application startup.
+2025-04-09 14:04:15,717 - INFO - Application startup complete.
+2025-04-09 14:05:04,300 - INFO - 1 change detected
+2025-04-09 14:05:33,972 - INFO - 1 change detected
+2025-04-09 14:05:33,972 - WARNING - WatchFiles detected changes in 'src\modules\students\students_controller.py'. Reloading...
+2025-04-09 14:06:23,719 - INFO - Shutting down
+2025-04-09 14:06:23,829 - INFO - Waiting for application shutdown.
+2025-04-09 14:06:23,830 - INFO - Application shutdown complete.
+2025-04-09 14:06:23,831 - INFO - Finished server process [28296]
+2025-04-09 14:06:24,489 - INFO - 4 changes detected
+2025-04-09 14:06:24,489 - WARNING - WatchFiles detected changes in 'src\modules\sections\sections_controller.py', 'src\modules\notifications\notifications_controller.py', 'src\modules\user_roles\user_roles_controller.py'. Reloading...
+2025-04-09 14:06:25,680 - INFO - Started server process [24104]
+2025-04-09 14:06:25,683 - INFO - Waiting for application startup.
+2025-04-09 14:06:25,684 - INFO - Application startup complete.
+2025-04-09 14:06:25,740 - ERROR - Traceback (most recent call last):
+  File "C:\Users\patri\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\patri\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\patri\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\patri\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\patri\OneDrive\Desktop\My Projects\Freelance\JCFA\jcfa-backend-api\.venv\Lib\site-packages\starlette\routing.py", line 700, in lifespan
+    await receive()
+  File "C:\Users\patri\OneDrive\Desktop\My Projects\Freelance\JCFA\jcfa-backend-api\.venv\Lib\site-packages\uvicorn\lifespan\on.py", line 137, in receive
+    return await self.receive_queue.get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\patri\AppData\Local\Programs\Python\Python311\Lib\asyncio\queues.py", line 158, in get
+    await getter
+asyncio.exceptions.CancelledError
+
+2025-04-09 14:06:26,639 - INFO - 21 changes detected
+2025-04-09 14:06:27,612 - INFO - Started server process [11932]
+2025-04-09 14:06:27,614 - INFO - Waiting for application startup.
+2025-04-09 14:06:27,615 - INFO - Application startup complete.
+2025-04-09 14:06:28,553 - INFO - 1 change detected
+2025-04-09 14:06:28,911 - INFO - 1 change detected
+2025-04-09 14:06:29,269 - INFO - 1 change detected
+2025-04-09 14:06:29,625 - INFO - 1 change detected
+2025-04-09 14:06:29,986 - INFO - 1 change detected
+2025-04-09 14:06:30,343 - INFO - 1 change detected
+2025-04-09 14:06:30,703 - INFO - 1 change detected
+2025-04-09 14:06:31,062 - INFO - 1 change detected
+2025-04-09 14:06:31,420 - INFO - 1 change detected
+2025-04-09 14:06:31,777 - INFO - 1 change detected
+2025-04-09 14:06:32,138 - INFO - 1 change detected
+2025-04-09 14:06:32,496 - INFO - 1 change detected
+2025-04-09 14:06:32,853 - INFO - 1 change detected
+2025-04-09 14:06:33,210 - INFO - 1 change detected
+2025-04-09 14:06:33,569 - INFO - 1 change detected
+2025-04-09 14:06:33,925 - INFO - 1 change detected
+2025-04-09 14:06:34,284 - INFO - 1 change detected
+2025-04-09 14:06:34,642 - INFO - 1 change detected
+2025-04-09 14:06:35,001 - INFO - 1 change detected
+2025-04-09 14:06:35,362 - INFO - 1 change detected
+2025-04-09 14:06:35,724 - INFO - 1 change detected
+2025-04-09 14:06:36,081 - INFO - 2 changes detected
+2025-04-09 14:06:36,442 - INFO - 1 change detected
+2025-04-09 14:06:36,805 - INFO - 1 change detected
+2025-04-09 14:06:37,167 - INFO - 1 change detected
+2025-04-09 14:06:37,527 - INFO - 1 change detected
+2025-04-09 14:06:37,890 - INFO - 1 change detected
+2025-04-09 14:06:38,250 - INFO - 1 change detected
+2025-04-09 14:06:38,610 - INFO - 1 change detected
+2025-04-09 14:06:38,968 - INFO - 1 change detected
+2025-04-09 14:06:39,329 - INFO - 1 change detected
+2025-04-09 14:06:39,689 - INFO - 1 change detected
+2025-04-09 14:06:40,048 - INFO - 1 change detected
+2025-04-09 14:06:40,407 - INFO - 1 change detected
+2025-04-09 14:06:40,765 - INFO - 1 change detected
+2025-04-09 14:06:41,120 - INFO - 1 change detected
+2025-04-09 14:06:41,479 - INFO - 1 change detected
+2025-04-09 14:06:41,840 - INFO - 1 change detected
+2025-04-09 14:06:42,199 - INFO - 1 change detected
+2025-04-09 14:06:42,557 - INFO - 1 change detected
+2025-04-09 14:06:42,916 - INFO - 1 change detected
+2025-04-09 14:06:43,272 - INFO - 1 change detected
+2025-04-09 14:06:43,631 - INFO - 1 change detected
+2025-04-09 14:06:43,989 - INFO - 1 change detected
+2025-04-09 14:06:44,345 - INFO - 1 change detected
+2025-04-09 14:06:44,704 - INFO - 1 change detected
+2025-04-09 14:06:45,062 - INFO - 4 changes detected
+2025-04-09 14:06:45,062 - WARNING - WatchFiles detected changes in 'src\modules\user_roles\user_roles_controller.py', 'src\modules\sections\sections_controller.py', 'src\modules\students\students_controller.py'. Reloading...
+2025-04-09 14:06:57,234 - INFO - Shutting down
+2025-04-09 14:06:57,343 - INFO - Waiting for application shutdown.
+2025-04-09 14:06:57,344 - INFO - Application shutdown complete.
+2025-04-09 14:06:57,344 - INFO - Finished server process [11932]
+2025-04-09 14:06:58,253 - INFO - 1 change detected
+2025-04-09 14:06:58,609 - INFO - 1 change detected
+2025-04-09 14:06:58,971 - INFO - 1 change detected
+2025-04-09 14:06:59,163 - INFO - Started server process [7952]
+2025-04-09 14:06:59,165 - INFO - Waiting for application startup.
+2025-04-09 14:06:59,166 - INFO - Application startup complete.
+2025-04-09 14:06:59,332 - INFO - 1 change detected
+2025-04-09 14:06:59,693 - INFO - 1 change detected
+2025-04-09 14:07:00,048 - INFO - 1 change detected

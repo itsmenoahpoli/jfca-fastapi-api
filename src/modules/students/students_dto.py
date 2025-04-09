@@ -8,5 +8,5 @@ class StudentDTO(BaseModel):
 	guardian_name: str
 	guardian_relation: str
 	guardian_mobile_number: str
-	section_id: str # Reference to section object_id
+	section_id: str 
 	is_enabled: bool

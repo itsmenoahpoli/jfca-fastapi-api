@@ -46,9 +46,9 @@ python -m venv .venv
 # For MacOS
 source .venv/bin/activate
 
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
-fastapi dev app/main.py
+python -m fastapi dev app/main.py
 ```
 
 <hr />

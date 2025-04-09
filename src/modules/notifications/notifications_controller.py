@@ -9,7 +9,7 @@ notifications_router = APIRouter(
 )
 
 @notifications_router.post('/sms/test')
-async def get_list_handler():
+async def send_sms_handler():
 	result = notifications_service.send_sms('09620636535', 'Good day \n This is a test sms from JCFA Server \n Thank you!')
 	
 	return HTTPResponse(
