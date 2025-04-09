@@ -11,6 +11,11 @@ class AppSettings(BaseSettings):
 	app_semaphore_url: str
 	app_semaphore_key: str
 	app_semaphore_sender_name: str
+	app_mail_host: str
+	app_mail_port: int
+	app_mail_username: str
+	app_mail_password: str
+	app_mail_from: str
 
 	class Config:
 		env_file = '.env'
