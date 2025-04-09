@@ -3,7 +3,6 @@ from fastapi import HTTPException, status
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from src.config.settings import app_settings
-from src.utils.logging_utils import sms_logger, mail_logger
 from src.constants.mail_constant import MailDefauls
 
 class NotificationsService:
@@ -29,7 +28,6 @@ class NotificationsService:
 			url = self.__SEMAPHORE_URL + urllib.parse.urlencode(params)
 			response = requests.post(url)
 			
-			sms_logger.info(response.text)
 			print(f"Response: {response.text}")
 
 			response.raise_for_status()
@@ -57,7 +55,6 @@ class NotificationsService:
 
 			mail_server.send_message(mail)
 			mail_server.quit()
-			mail_logger.info(f"Mail:{subject} sent to {recipient}")
 
 			return True
 		except Exception as e:
