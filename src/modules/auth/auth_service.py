@@ -8,8 +8,9 @@ TOKEN_EXPIRATION_TIME = time.time() + 86400
 
 class AuthService:
 	__JWT_SECRET_KEY = app_settings.app_api_key
-
-	def __check_user_credentials( credentials):
+	
+	@classmethod
+	def __check_user_credentials(self, credentials):
 		user = users_service.find_by_email(credentials['email'])
 
 		if user is None or user['is_enabled'] is False or not verify_password(credentials['password'], user['password']):
@@ -17,6 +18,7 @@ class AuthService:
 		
 		return user
 
+	@classmethod
 	def authenticate_credentials(self, credentials):
 		check_user = self.__check_user_credentials(credentials)
 

@@ -48,7 +48,7 @@ source .venv/bin/activate
 
 python -m pip install -r requirements.txt
 
-python -m fastapi dev app/main.py
+python -m fastapi dev main.py
 ```
 
 <hr />
