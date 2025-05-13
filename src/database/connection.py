@@ -16,7 +16,7 @@ def db_connect():
 def get_db_collection(collection: str, create_if_none: bool = False):
 	db_database = db_connect()
 
-	if db_connect is None:
+	if db_database is None:
 		raise RuntimeError("Database is none")
 	
 	if not collection:
