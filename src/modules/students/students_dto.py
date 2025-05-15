@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
+from fastapi import UploadFile
 
 class StudentDTO(BaseModel):
 	name: str = Field(min_length=1, max_length=100)
@@ -10,3 +11,6 @@ class StudentDTO(BaseModel):
 	guardian_mobile_number: str
 	section_id: str 
 	is_enabled: bool
+	photo1: UploadFile
+	photo2: UploadFile
+	photo3: UploadFile

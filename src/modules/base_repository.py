@@ -50,13 +50,16 @@ class BaseRepository:
 		return data
 
 	def update_data(self, id, data):
-		result = self._entity.update_one({ "_id": ObjectId(id) }, { "$set": data })
+		data["updatedAt"] = datetime.datetime.now(datetime.timezone.utc)
+		result = self._entity.update_one(
+			{ "_id": ObjectId(id) },
+			{ "$set": data }
+		)
 
 		if result.modified_count == 0:
 			return None
 		
-		updated_data = self.get_single_data(id)
-
+		updated_data = self._entity.find_one({ "_id": ObjectId(id) })
 		return self._single_serializer(updated_data)
 		
 
