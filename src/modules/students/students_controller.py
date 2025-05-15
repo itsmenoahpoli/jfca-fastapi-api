@@ -24,8 +24,14 @@ async def get_list_handler():
 	)
 
 @students_router.get('/{id}')
-async def get_single_handler(id):
+async def get_single_handler(id: str):
 	result = students_service.get_single_data(id)
+	
+	if result is None or result == ErrorTypes.NOT_FOUND_ERROR:
+		return HTTPResponse(
+			detail="Student not found",
+			status_code=status.HTTP_404_NOT_FOUND
+		)
 	
 	return HTTPResponse(
 		detail=result,
