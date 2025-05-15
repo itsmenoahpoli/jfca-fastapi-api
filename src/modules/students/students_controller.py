@@ -105,9 +105,9 @@ async def create_handler(
     guardian_mobile_number: str = Form(...),
     section_id: str = Form(...),
     is_enabled: bool = Form(...),
-    photo1: UploadFile = File(...),
-    photo2: UploadFile = File(...),
-    photo3: UploadFile = File(...)
+    photo1: UploadFile = File(None),
+    photo2: UploadFile = File(None),
+    photo3: UploadFile = File(None)
 ):
     temp_id = str(ObjectId())
     image_paths = students_service.process_student_images(temp_id, photo1, photo2, photo3)

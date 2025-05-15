@@ -21,10 +21,11 @@ class StudentsService(BaseRepository):
         
         image_paths = {}
         for photo, filename in photo_mapping.items():
-            file_path = f"{photo_dir}/{filename}.jpg"
-            with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(photo.file, buffer)
-            image_paths[filename] = get_image_url(f"student-face/{student_id}/{filename}.jpg")
+            if photo is not None:
+                file_path = f"{photo_dir}/{filename}.jpg"
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(photo.file, buffer)
+                image_paths[filename] = get_image_url(f"student-face/{student_id}/{filename}.jpg")
         
         return image_paths
 
