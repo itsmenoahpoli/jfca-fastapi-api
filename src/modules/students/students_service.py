@@ -76,38 +76,4 @@ class StudentsService(BaseRepository):
             shutil.rmtree(image_dir)
         return result
 
-    def record_attendance(self, student_id: str, type: str):
-        student = self.get_single_data(student_id)
-        if not student:
-            return None
-
-        attendance_entry = {
-            "type": type,
-            "time_recorded": datetime.utcnow(),
-            "student_name": student["name"],
-            "sms_status": "pending",
-            "student_id": ObjectId(student_id),
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
-        }
-
-        result = entities.AttendanceEntity.insert_one(attendance_entry)
-        if not result.inserted_id:
-            return None
-
-        attendance_entry["_id"] = result.inserted_id
-        return attendance_entry
-
-    def update_attendance_sms_status(self, attendance_id: str, status: str):
-        result = entities.AttendanceEntity.update_one(
-            {"_id": ObjectId(attendance_id)},
-            {
-                "$set": {
-                    "sms_status": status,
-                    "updated_at": datetime.utcnow()
-                }
-            }
-        )
-        return result.modified_count > 0
-
 students_service = StudentsService()
