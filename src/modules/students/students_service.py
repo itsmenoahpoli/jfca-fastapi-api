@@ -4,6 +4,7 @@ from src.utils.image_utils import get_image_url
 import os
 import shutil
 from fastapi import UploadFile
+from bson import ObjectId
 
 class StudentsService(BaseRepository):
     def __init__(self):
@@ -14,14 +15,17 @@ class StudentsService(BaseRepository):
         
         for student in students:
             if student.get("section_id"):
-                section = entities.SectionEntity.find_one({"_id": student["section_id"]})
-                if section:
-                    student["section"] = {
-                        "id": str(section["_id"]),
-                        "name": section.get("name", ""),
-                        "level": section.get("level", ""),
-                        "school_year": section.get("school_year", "")
-                    }
+                try:
+                    section = entities.SectionEntity.find_one({"_id": ObjectId(student["section_id"])})
+                    if section:
+                        student["section"] = {
+                            "id": str(section["_id"]),
+                            "name": section.get("name", ""),
+                            "level": section.get("level", ""),
+                            "school_year": section.get("school_year", "")
+                        }
+                except:
+                    pass
         
         return students
     
