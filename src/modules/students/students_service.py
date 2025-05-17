@@ -9,6 +9,22 @@ class StudentsService(BaseRepository):
     def __init__(self):
         super().__init__(entity=entities.StudentEntity)
     
+    def get_list_data(self):
+        students = super().get_list_data()
+        
+        for student in students:
+            if student.get("section_id"):
+                section = entities.SectionEntity.find_one({"_id": student["section_id"]})
+                if section:
+                    student["section"] = {
+                        "id": str(section["_id"]),
+                        "name": section.get("name", ""),
+                        "level": section.get("level", ""),
+                        "school_year": section.get("school_year", "")
+                    }
+        
+        return students
+    
     def process_student_images(self, student_id: str, photo1: UploadFile, photo2: UploadFile, photo3: UploadFile):
         photo_dir = f"public/assets/images/student-face/{student_id}"
         os.makedirs(photo_dir, exist_ok=True)
