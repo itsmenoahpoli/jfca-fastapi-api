@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from fastapi import UploadFile
 
 class StudentDTO(BaseModel):
@@ -14,3 +14,8 @@ class StudentDTO(BaseModel):
 	photo1: UploadFile
 	photo2: UploadFile
 	photo3: UploadFile
+
+	@field_validator('contact', 'guardian_mobile_number')
+	@classmethod
+	def format_phone_number(cls, v):
+		return v.replace(' ', '').replace('-', '')

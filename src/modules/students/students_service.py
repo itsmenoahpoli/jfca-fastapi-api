@@ -12,7 +12,7 @@ class StudentsService(BaseRepository):
         super().__init__(entity=entities.StudentEntity)
     
     def get_next_student_key(self):
-        latest_student = self.entity.find_one(
+        latest_student = self._entity.find_one(
             sort=[("student_key", -1)]
         )
         
@@ -24,9 +24,9 @@ class StudentsService(BaseRepository):
             
         return f"STUDENT_{next_number:02d}"
     
-    def create_data(self, data: dict):
+    def create_data(self, data: dict, flag_unique_by: str = None):
         data["student_key"] = self.get_next_student_key()
-        return super().create_data(data)
+        return super().create_data(data, flag_unique_by)
     
     def get_list_data(self):
         students = super().get_list_data()
