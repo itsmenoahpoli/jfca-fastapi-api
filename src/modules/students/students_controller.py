@@ -4,10 +4,6 @@ from .students_dto import StudentDTO
 from src.utils.http_utils import HTTPResponse
 from src.utils.image_utils import get_image_url
 from src.constants.errors_constant import ErrorTypes
-from src.modules.notifications.notifications_service import notifications_service
-from datetime import datetime
-import os
-import shutil
 from typing import List
 from bson.objectid import ObjectId
 
