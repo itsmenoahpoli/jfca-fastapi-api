@@ -11,6 +11,23 @@ class StudentsService(BaseRepository):
     def __init__(self):
         super().__init__(entity=entities.StudentEntity)
     
+    def get_next_student_key(self):
+        latest_student = self.entity.find_one(
+            sort=[("student_key", -1)]
+        )
+        
+        if latest_student and "student_key" in latest_student:
+            current_number = int(latest_student["student_key"].split("_")[1])
+            next_number = current_number + 1
+        else:
+            next_number = 1
+            
+        return f"STUDENT_{next_number:02d}"
+    
+    def create_data(self, data: dict):
+        data["student_key"] = self.get_next_student_key()
+        return super().create_data(data)
+    
     def get_list_data(self):
         students = super().get_list_data()
         
