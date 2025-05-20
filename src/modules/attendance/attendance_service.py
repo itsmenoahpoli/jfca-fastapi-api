@@ -110,11 +110,12 @@ class AttendanceService:
                 section = SectionEntity.find_one({'_id': ObjectId(student.get('section_id'))})
                 student_section = section.get('name', 'Unknown Section') if section else 'Unknown Section'
                 guardian_name = student.get('guardian_name', 'Guardian')
+                guardian_mobile = student.get('guardian_mobile_number', '')
                 time_str = now.strftime('%I:%M %p')
                 date_str = now.strftime('%B %d, %Y')
                 message = get_attendance_sms_template(guardian_name, student_name, student_section, date_str, time_str, True)
                 
-                sms_sent = notifications_service.send_sms('09620636535', message)
+                sms_sent = notifications_service.send_sms(guardian_mobile, message)
                 
                 self.entity.update_one(
                     {'_id': record_id},
@@ -150,11 +151,12 @@ class AttendanceService:
                 section = SectionEntity.find_one({'_id': ObjectId(student.get('section_id'))})
                 student_section = section.get('name', 'Unknown Section') if section else 'Unknown Section'
                 guardian_name = student.get('guardian_name', 'Guardian')
+                guardian_mobile = student.get('guardian_mobile', '')
                 time_str = now.strftime('%I:%M %p')
                 date_str = now.strftime('%B %d, %Y')
                 message = get_attendance_sms_template(guardian_name, student_name, student_section, date_str, time_str, False)
 
-                sms_sent = notifications_service.send_sms('09620636535', message)
+                sms_sent = notifications_service.send_sms(guardian_mobile, message)
                 
                 self.entity.update_one(
                     {'_id': existing_record['_id']},
