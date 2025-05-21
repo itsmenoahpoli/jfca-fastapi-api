@@ -13,6 +13,7 @@ class BaseRepository:
 
 	def _single_serializer(self, data):
 		if data:
+			data = data.copy()
 			data["id"] = str(data["_id"])
 			del data["_id"]
 	

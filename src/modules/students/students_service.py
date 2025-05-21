@@ -26,6 +26,10 @@ class StudentsService(BaseRepository):
     
     def create_data(self, data: dict, flag_unique_by: str = None):
         data["student_key"] = self.get_next_student_key()
+        if "contact" in data:
+            data["contact"] = data["contact"].replace(" ", "").replace("-", "")
+        if "guardian_mobile_number" in data:
+            data["guardian_mobile_number"] = data["guardian_mobile_number"].replace(" ", "").replace("-", "")
         return super().create_data(data, flag_unique_by)
     
     def get_list_data(self):
@@ -92,5 +96,37 @@ class StudentsService(BaseRepository):
         if os.path.exists(image_dir):
             shutil.rmtree(image_dir)
         return result
+
+    def format_all_student_mobile_numbers(self):
+        students = self._entity.find()
+        updated_count = 0
+        
+        for student in students:
+            update_data = {}
+            needs_update = False
+            
+            if "contact" in student:
+                formatted_contact = student["contact"].replace(" ", "").replace("-", "")
+                if formatted_contact != student["contact"]:
+                    update_data["contact"] = formatted_contact
+                    needs_update = True
+                    
+            if "guardian_mobile_number" in student:
+                formatted_guardian = student["guardian_mobile_number"].replace(" ", "").replace("-", "")
+                if formatted_guardian != student["guardian_mobile_number"]:
+                    update_data["guardian_mobile_number"] = formatted_guardian
+                    needs_update = True
+            
+            if needs_update:
+                self._entity.update_one(
+                    {"_id": student["_id"]},
+                    {"$set": update_data}
+                )
+                updated_count += 1
+        
+        return {
+            "total_updated": updated_count,
+            "message": f"Successfully updated {updated_count} student records"
+        }
 
 students_service = StudentsService()
