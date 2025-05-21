@@ -5,6 +5,7 @@ load_dotenv(find_dotenv(".env"))
 
 class AppSettings(BaseSettings):
 	app_debug: bool = True
+	app_enable_sms: bool = False
 	app_url: str
 	app_api_key: str
 	app_database_db: str

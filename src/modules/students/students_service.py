@@ -129,4 +129,22 @@ class StudentsService(BaseRepository):
             "message": f"Successfully updated {updated_count} student records"
         }
 
+    def get_single_data(self, id: str):
+        student = super().get_single_data(id)
+        
+        if student and student.get("section_id"):
+            try:
+                section = entities.SectionEntity.find_one({"_id": ObjectId(student["section_id"])})
+                if section:
+                    student["section"] = {
+                        "id": str(section["_id"]),
+                        "name": section.get("name", ""),
+                        "level": section.get("level", ""),
+                        "school_year": section.get("school_year", "")
+                    }
+            except:
+                pass
+        
+        return student
+
 students_service = StudentsService()

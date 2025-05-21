@@ -14,9 +14,12 @@ class NotificationsService:
 	__MAIL_HOST = app_settings.app_mail_host
 	__MAIL_PORT = app_settings.app_mail_port
 	__MAIL_FROM = app_settings.app_mail_from
-
+	__ENABLE_SMS = app_settings.app_enable_sms
 
 	def send_sms(self, recipient, message):
+		if not self.__ENABLE_SMS:
+			return True
+
 		try:
 			params = (
 				('apikey', self.__SEMAPHORE_API_KEY),
@@ -41,6 +44,9 @@ class NotificationsService:
 			
 
 	def send_email(self, recipient, subject = MailDefauls.DEFAULT_SUBJECT, message = ""):
+		if not self.__ENABLE_SMS:
+			return True
+
 		try:
 			mail = MIMEMultipart()
 			mail['From'] = self.__MAIL_FROM
@@ -60,7 +66,5 @@ class NotificationsService:
 		except Exception as e:
 			print(f"An error occurred: {e}")
 			return None
-
-
 
 notifications_service = NotificationsService()
