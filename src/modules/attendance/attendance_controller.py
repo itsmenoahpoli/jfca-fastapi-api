@@ -3,7 +3,10 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 
-from src.modules.attendance.attendance_dto import AttendanceCreateDTO, AttendanceResponseDTO, AttendanceUpdateDTO, TimeInOutDTO
+from src.modules.attendance.attendance_dto import (
+    AttendanceCreateDTO, AttendanceResponseDTO, AttendanceUpdateDTO, TimeInOutDTO,
+    TimeInOutResponseDTO
+)
 from src.modules.attendance.attendance_service import AttendanceService
 
 attendance_router = APIRouter(prefix='/attendance', tags=['Attendance'])
@@ -38,6 +41,16 @@ def get_attendance_by_date(date: str):
         return service.get_attendance_by_date(date_obj)
     except ValueError:
         raise HTTPException(status_code=400, detail='Invalid date format. Use YYYY-MM-DD')
+
+
+@attendance_router.get('', response_model=List[TimeInOutResponseDTO])
+def get_all_attendance():
+    try:
+        return service.get_all_attendance()
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @attendance_router.patch('/{attendance_id}', response_model=AttendanceResponseDTO)

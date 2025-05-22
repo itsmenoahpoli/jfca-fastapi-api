@@ -3,7 +3,7 @@ from src.modules.dashboard.dashboard_dto import DashboardCountsResponse
 from src.modules.dashboard.dashboard_service import DashboardService
 
 dashboard_router = APIRouter(
-    prefix="/api/dashboard",
+    prefix="/dashboard",
     tags=["Dashboard"]
 )
 

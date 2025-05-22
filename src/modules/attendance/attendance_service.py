@@ -70,6 +70,15 @@ class AttendanceService:
         result = self.entity.delete_one({'_id': ObjectId(attendance_id)})
         return result.deleted_count > 0
 
+    def get_all_attendance(self) -> List[dict]:
+        try:
+            results = list(self.entity.find().sort('created_at', -1))
+            for result in results:
+                result['_id'] = str(result['_id'])
+            return results
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error retrieving attendance records: {str(e)}")
+
     def record_time_in_out(self, data: TimeInOutDTO) -> dict:
         try:
             student = StudentEntity.find_one({'_id': ObjectId(data.student_id)})
