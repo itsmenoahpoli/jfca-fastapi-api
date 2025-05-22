@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict
 
 from pydantic import BaseModel
 
@@ -24,6 +24,21 @@ class AttendanceResponseDTO(BaseModel):
     updated_at: datetime
 
 
+class SectionDTO(BaseModel):
+    _id: str
+    name: str
+    grade_level: Optional[str] = None
+
+
+class StudentDTO(BaseModel):
+    _id: str
+    name: str
+    guardian_name: Optional[str] = None
+    guardian_mobile: Optional[str] = None
+    section_id: str
+    section: Optional[SectionDTO] = None
+
+
 class TimeInOutResponseDTO(BaseModel):
     _id: str
     student_id: str
@@ -35,6 +50,7 @@ class TimeInOutResponseDTO(BaseModel):
     sms_notif_status: str
     created_at: datetime
     updated_at: datetime
+    student: Optional[StudentDTO] = None
 
 
 class TimeInOutDTO(BaseModel):
