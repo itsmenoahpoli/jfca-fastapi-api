@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 from bson import ObjectId
 from fastapi import HTTPException
+import pytz
 
 from src.database.entities import AttendanceEntity, StudentEntity, SectionEntity
 from src.modules.attendance.attendance_dto import AttendanceCreateDTO, AttendanceUpdateDTO, TimeInOutDTO
@@ -12,14 +13,15 @@ from src.modules.attendance.sms_templates import get_attendance_sms_template
 class AttendanceService:
     def __init__(self):
         self.entity = AttendanceEntity
+        self.timezone = pytz.timezone('Asia/Manila')
 
     def create_attendance(self, data: AttendanceCreateDTO) -> dict:
         attendance_data = {
             'student_id': data.student_id,
             'status': data.status,
             'notes': data.notes,
-            'created_at': datetime.utcnow(),
-            'updated_at': datetime.utcnow()
+            'created_at': datetime.now(self.timezone),
+            'updated_at': datetime.now(self.timezone)
         }
         result = self.entity.insert_one(attendance_data)
         attendance_data['_id'] = str(result.inserted_id)
@@ -38,8 +40,8 @@ class AttendanceService:
         return results
 
     def get_attendance_by_date(self, date: datetime) -> List[dict]:
-        start_of_day = datetime(date.year, date.month, date.day)
-        end_of_day = datetime(date.year, date.month, date.day, 23, 59, 59)
+        start_of_day = datetime(date.year, date.month, date.day, tzinfo=self.timezone)
+        end_of_day = datetime(date.year, date.month, date.day, 23, 59, 59, tzinfo=self.timezone)
         results = list(self.entity.find({
             'created_at': {
                 '$gte': start_of_day,
@@ -56,7 +58,7 @@ class AttendanceService:
             update_data['status'] = data.status
         if data.notes is not None:
             update_data['notes'] = data.notes
-        update_data['updated_at'] = datetime.utcnow()
+        update_data['updated_at'] = datetime.now(self.timezone)
         
         result = self.entity.update_one(
             {'_id': ObjectId(attendance_id)},
@@ -70,9 +72,20 @@ class AttendanceService:
         result = self.entity.delete_one({'_id': ObjectId(attendance_id)})
         return result.deleted_count > 0
 
-    def get_all_attendance(self) -> List[dict]:
+    def get_all_attendance(self, start_date: Optional[datetime] = None, end_date: Optional[datetime] = None) -> List[dict]:
         try:
-            results = list(self.entity.find().sort('created_at', -1))
+            query = {}
+            
+            if start_date or end_date:
+                date_filter = {}
+                if start_date:
+                    date_filter['$gte'] = start_date
+                if end_date:
+                    end_date = datetime(end_date.year, end_date.month, end_date.day, 23, 59, 59, tzinfo=self.timezone)
+                    date_filter['$lte'] = end_date
+                query['date_recorded'] = date_filter
+            
+            results = list(self.entity.find(query).sort('created_at', -1))
             formatted_results = []
             
             for result in results:
@@ -122,9 +135,9 @@ class AttendanceService:
             if not student:
                 raise HTTPException(status_code=404, detail='Student not found')
 
-            now = datetime.utcnow()
-            start_of_day = datetime(now.year, now.month, now.day)
-            end_of_day = datetime(now.year, now.month, now.day, 23, 59, 59)
+            now = datetime.now(self.timezone)
+            start_of_day = datetime(now.year, now.month, now.day, tzinfo=self.timezone)
+            end_of_day = datetime(now.year, now.month, now.day, 23, 59, 59, tzinfo=self.timezone)
 
             existing_record = self.entity.find_one({
                 'student_id': data.student_id,

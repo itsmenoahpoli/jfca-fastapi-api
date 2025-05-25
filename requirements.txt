@@ -30,6 +30,7 @@ PyJWT==2.10.1
 pymongo==4.11.1
 python-dotenv==1.0.1
 python-multipart==0.0.20
+pytz==2025.2
 PyYAML==6.0.2
 requests==2.32.3
 rich==13.9.4
@@ -41,5 +42,6 @@ typer==0.15.1
 typing_extensions==4.12.2
 urllib3==2.3.0
 uvicorn==0.34.0
+uvloop==0.21.0
 watchfiles==1.0.4
 websockets==14.2

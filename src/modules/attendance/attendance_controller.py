@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException
 
@@ -44,9 +44,24 @@ def get_attendance_by_date(date: str):
 
 
 @attendance_router.get('', response_model=List[TimeInOutResponseDTO])
-def get_all_attendance():
+def get_all_attendance(start_date: Optional[str] = None, end_date: Optional[str] = None):
     try:
-        return service.get_all_attendance()
+        start_date_obj = None
+        end_date_obj = None
+        
+        if start_date:
+            try:
+                start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+            except ValueError:
+                raise HTTPException(status_code=400, detail='Invalid start_date format. Use YYYY-MM-DD')
+                
+        if end_date:
+            try:
+                end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+            except ValueError:
+                raise HTTPException(status_code=400, detail='Invalid end_date format. Use YYYY-MM-DD')
+                
+        return service.get_all_attendance(start_date_obj, end_date_obj)
     except HTTPException as e:
         raise e
     except Exception as e:
