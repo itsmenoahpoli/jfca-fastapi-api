@@ -52,7 +52,9 @@ async def delete_one_handler(id):
 @students_router.patch('/{id}')
 async def update_handler(
     id: str,
-    name: str = Form(...),
+    first_name: str = Form(...),
+    middle_name: str = Form(...),
+    last_name: str = Form(...),
     email: str = Form(...),
     gender: str = Form(...),
     contact: str = Form(...),
@@ -65,7 +67,9 @@ async def update_handler(
     photo3: UploadFile = File(None)
 ):
     payload = {
-        "name": name,
+        "first_name": first_name,
+        "middle_name": middle_name,
+        "last_name": last_name,
         "email": email,
         "gender": gender,
         "contact": contact,
@@ -100,7 +104,9 @@ async def update_handler(
 
 @students_router.post('/')
 async def create_handler(
-    name: str = Form(...),
+    first_name: str = Form(...),
+    middle_name: str = Form(...),
+    last_name: str = Form(...),
     email: str = Form(...),
     gender: str = Form(...),
     contact: str = Form(...),
@@ -117,7 +123,9 @@ async def create_handler(
     image_paths = students_service.process_student_images(temp_id, photo1, photo2, photo3)
     
     payload = {
-        "name": name,
+        "first_name": first_name,
+        "middle_name": middle_name,
+        "last_name": last_name,
         "email": email,
         "gender": gender,
         "contact": contact,
@@ -129,7 +137,7 @@ async def create_handler(
         "images": image_paths
     }
     
-    result = students_service.create_data(payload, 'name')
+    result = students_service.create_data(payload, 'first_name')
     
     if result == ErrorTypes.ALREADY_EXISTS:
         return HTTPResponse(
