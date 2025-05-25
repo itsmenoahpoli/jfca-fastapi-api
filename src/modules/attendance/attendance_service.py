@@ -89,41 +89,55 @@ class AttendanceService:
             formatted_results = []
             
             for result in results:
-                attendance_data = {
-                    '_id': str(result['_id']),
-                    'student_id': result['student_id'],
-                    'date_recorded': result.get('date_recorded'),
-                    'time_in': result.get('time_in'),
-                    'time_out': result.get('time_out'),
-                    'in_status': result.get('in_status'),
-                    'out_status': result.get('out_status'),
-                    'sms_notif_status': result.get('sms_notif_status'),
-                    'created_at': result.get('created_at'),
-                    'updated_at': result.get('updated_at')
-                }
-                
-                student = StudentEntity.find_one({'_id': ObjectId(result['student_id'])})
-                if student:
-                    student_data = {
-                        '_id': str(student['_id']),
-                        'name': student.get('name'),
-                        'guardian_name': student.get('guardian_name'),
-                        'guardian_mobile': student.get('guardian_mobile'),
-                        'section_id': str(student.get('section_id'))
+                try:
+                    attendance_data = {
+                        '_id': str(result['_id']),
+                        'student_id': result.get('student_id'),
+                        'date_recorded': result.get('date_recorded'),
+                        'time_in': result.get('time_in'),
+                        'time_out': result.get('time_out'),
+                        'in_status': result.get('in_status', False),
+                        'out_status': result.get('out_status', False),
+                        'sms_notif_status': result.get('sms_notif_status', 'pending'),
+                        'created_at': result.get('created_at'),
+                        'updated_at': result.get('updated_at')
                     }
                     
-                    section = SectionEntity.find_one({'_id': ObjectId(student.get('section_id'))})
-                    if section:
-                        section_data = {
-                            '_id': str(section['_id']),
-                            'name': section.get('name'),
-                            'grade_level': section.get('grade_level')
-                        }
-                        student_data['section'] = section_data
+                    if result.get('student_id'):
+                        try:
+                            student = StudentEntity.find_one({'_id': ObjectId(result['student_id'])})
+                            if student:
+                                student_data = {
+                                    '_id': str(student['_id']),
+                                    'name': f"{student.get('first_name', '')} {student.get('middle_name', '')} {student.get('last_name', '')}".strip(),
+                                    'first_name': student.get('first_name', ''),
+                                    'middle_name': student.get('middle_name', ''),
+                                    'last_name': student.get('last_name', ''),
+                                    'guardian_name': student.get('guardian_name'),
+                                    'guardian_mobile': student.get('guardian_mobile'),
+                                    'section_id': str(student.get('section_id', ''))
+                                }
+                                
+                                if student.get('section_id'):
+                                    try:
+                                        section = SectionEntity.find_one({'_id': ObjectId(student['section_id'])})
+                                        if section:
+                                            section_data = {
+                                                '_id': str(section['_id']),
+                                                'name': section.get('name', ''),
+                                                'grade_level': section.get('grade_level')
+                                            }
+                                            student_data['section'] = section_data
+                                    except Exception:
+                                        pass
+                                
+                                attendance_data['student'] = student_data
+                        except Exception:
+                            pass
                     
-                    attendance_data['student'] = student_data
-                
-                formatted_results.append(attendance_data)
+                    formatted_results.append(attendance_data)
+                except Exception:
+                    continue
             
             return formatted_results
         except Exception as e:

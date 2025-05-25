@@ -33,6 +33,9 @@ class SectionDTO(BaseModel):
 class StudentDTO(BaseModel):
     _id: str
     name: str
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+    last_name: Optional[str] = None
     guardian_name: Optional[str] = None
     guardian_mobile: Optional[str] = None
     section_id: str
