@@ -13,15 +13,14 @@ from src.modules.attendance.sms_templates import get_attendance_sms_template
 class AttendanceService:
     def __init__(self):
         self.entity = AttendanceEntity
-        self.timezone = pytz.timezone('Asia/Manila')
 
     def create_attendance(self, data: AttendanceCreateDTO) -> dict:
         attendance_data = {
             'student_id': data.student_id,
             'status': data.status,
             'notes': data.notes,
-            'created_at': datetime.now(self.timezone),
-            'updated_at': datetime.now(self.timezone)
+            'created_at': datetime.now(),
+            'updated_at': datetime.now()
         }
         result = self.entity.insert_one(attendance_data)
         attendance_data['_id'] = str(result.inserted_id)
@@ -40,8 +39,8 @@ class AttendanceService:
         return results
 
     def get_attendance_by_date(self, date: datetime) -> List[dict]:
-        start_of_day = datetime(date.year, date.month, date.day, tzinfo=self.timezone)
-        end_of_day = datetime(date.year, date.month, date.day, 23, 59, 59, tzinfo=self.timezone)
+        start_of_day = datetime(date.year, date.month, date.day)
+        end_of_day = datetime(date.year, date.month, date.day, 23, 59, 59)
         results = list(self.entity.find({
             'created_at': {
                 '$gte': start_of_day,
@@ -58,7 +57,7 @@ class AttendanceService:
             update_data['status'] = data.status
         if data.notes is not None:
             update_data['notes'] = data.notes
-        update_data['updated_at'] = datetime.now(self.timezone)
+        update_data['updated_at'] = datetime.now()
         
         result = self.entity.update_one(
             {'_id': ObjectId(attendance_id)},
@@ -81,7 +80,7 @@ class AttendanceService:
                 if start_date:
                     date_filter['$gte'] = start_date
                 if end_date:
-                    end_date = datetime(end_date.year, end_date.month, end_date.day, 23, 59, 59, tzinfo=self.timezone)
+                    end_date = datetime(end_date.year, end_date.month, end_date.day, 23, 59, 59)
                     date_filter['$lte'] = end_date
                 query['date_recorded'] = date_filter
             
@@ -149,22 +148,72 @@ class AttendanceService:
             if not student:
                 raise HTTPException(status_code=404, detail='Student not found')
 
-            now = datetime.now(self.timezone)
-            start_of_day = datetime(now.year, now.month, now.day, tzinfo=self.timezone)
-            end_of_day = datetime(now.year, now.month, now.day, 23, 59, 59, tzinfo=self.timezone)
+            now = datetime.now()
+            start_of_day = datetime(now.year, now.month, now.day)
+            end_of_day = datetime(now.year, now.month, now.day, 23, 59, 59)
 
-            existing_record = self.entity.find_one({
+            print('Query parameters:')
+            print('student_id:', data.student_id)
+            print('start_of_day:', start_of_day)
+            print('end_of_day:', end_of_day)
+
+            query = {
                 'student_id': data.student_id,
                 'date_recorded': {
                     '$gte': start_of_day,
                     '$lte': end_of_day
                 }
-            })
+            }
+            print('MongoDB query:', query)
 
-            if existing_record and existing_record.get('out_status'):
-                raise HTTPException(status_code=400, detail='Student has already completed attendance for today')
+            existing_record = self.entity.find_one(query)
+            print('existing_record:', existing_record)
 
-            if not existing_record:
+            if existing_record:
+                if existing_record.get('out_status'):
+                    raise HTTPException(status_code=400, detail='Student has already completed attendance for today')
+                
+                update_data = {
+                    'time_out': now,
+                    'out_status': True,
+                    'updated_at': now
+                }
+                self.entity.update_one(
+                    {'_id': existing_record['_id']},
+                    {'$set': update_data}
+                )
+
+                student_name = student.get('name', 'Student')
+                section = SectionEntity.find_one({'_id': ObjectId(student.get('section_id'))})
+                student_section = section.get('name', 'Unknown Section') if section else 'Unknown Section'
+                guardian_name = student.get('guardian_name', 'Guardian')
+                guardian_mobile = student.get('guardian_mobile_number', '')
+                time_str = now.strftime('%I:%M %p')
+                date_str = now.strftime('%B %d, %Y')
+                message = get_attendance_sms_template(guardian_name, student_name, student_section, date_str, time_str, False)
+
+                sms_sent = notifications_service.send_sms(guardian_mobile, message)
+                
+                self.entity.update_one(
+                    {'_id': existing_record['_id']},
+                    {'$set': {'sms_notif_status': 'sent' if sms_sent else 'failed'}}
+                )
+
+                updated_record = self.entity.find_one({'_id': existing_record['_id']})
+                updated_record['_id'] = str(updated_record['_id'])
+
+                return {
+                    'id': str(updated_record['_id']),
+                    'student_id': data.student_id,
+                    'date_recorded': updated_record['date_recorded'].strftime('%Y-%m-%d'),
+                    'time_in': updated_record['time_in'].strftime('%H:%M:%S') if updated_record['time_in'] else None,
+                    'time_out': updated_record['time_out'].strftime('%H:%M:%S') if updated_record['time_out'] else None,
+                    'in_status': updated_record['in_status'],
+                    'out_status': updated_record['out_status'],
+                    'sms_notif_status': 'sent' if sms_sent else 'failed',
+                    'message': 'Time out recorded successfully'
+                }
+            else:
                 attendance_data = {
                     'student_id': data.student_id,
                     'date_recorded': now,
@@ -208,47 +257,6 @@ class AttendanceService:
                     'out_status': updated_record['out_status'],
                     'sms_notif_status': 'sent' if sms_sent else 'failed',
                     'message': 'Time in recorded successfully'
-                }
-            else:
-                update_data = {
-                    'time_out': now,
-                    'out_status': True,
-                    'updated_at': now
-                }
-                self.entity.update_one(
-                    {'_id': existing_record['_id']},
-                    {'$set': update_data}
-                )
-
-                student_name = student.get('name', 'Student')
-                section = SectionEntity.find_one({'_id': ObjectId(student.get('section_id'))})
-                student_section = section.get('name', 'Unknown Section') if section else 'Unknown Section'
-                guardian_name = student.get('guardian_name', 'Guardian')
-                guardian_mobile = student.get('guardian_mobile', '')
-                time_str = now.strftime('%I:%M %p')
-                date_str = now.strftime('%B %d, %Y')
-                message = get_attendance_sms_template(guardian_name, student_name, student_section, date_str, time_str, False)
-
-                sms_sent = notifications_service.send_sms(guardian_mobile, message)
-                
-                self.entity.update_one(
-                    {'_id': existing_record['_id']},
-                    {'$set': {'sms_notif_status': 'sent' if sms_sent else 'failed'}}
-                )
-
-                updated_record = self.entity.find_one({'_id': existing_record['_id']})
-                updated_record['_id'] = str(updated_record['_id'])
-
-                return {
-                    'id': str(updated_record['_id']),
-                    'student_id': data.student_id,
-                    'date_recorded': updated_record['date_recorded'].strftime('%Y-%m-%d'),
-                    'time_in': updated_record['time_in'].strftime('%H:%M:%S') if updated_record['time_in'] else None,
-                    'time_out': updated_record['time_out'].strftime('%H:%M:%S') if updated_record['time_out'] else None,
-                    'in_status': updated_record['in_status'],
-                    'out_status': updated_record['out_status'],
-                    'sms_notif_status': 'sent' if sms_sent else 'failed',
-                    'message': 'Time out recorded successfully'
                 }
         except HTTPException:
             raise
