@@ -67,4 +67,20 @@ async def remove_student_face(student_id: str) -> dict:
             raise HTTPException(status_code=404, detail="Student face not found")
             
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/remove-all-faces")
+async def remove_all_student_faces() -> dict:
+    """
+    Remove all student faces from the recognition system
+    """
+    try:
+        success = face_service.remove_all_student_faces()
+        
+        if success:
+            return {"message": "All faces removed successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="No faces found to remove")
+            
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 

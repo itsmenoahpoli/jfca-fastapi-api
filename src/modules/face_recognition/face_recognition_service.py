@@ -97,4 +97,21 @@ class FaceRecognitionService:
             
         except Exception as e:
             print(f"Error removing student face: {str(e)}")
+            return False
+
+    def remove_all_student_faces(self) -> bool:
+        try:
+            if not os.path.exists(self.student_faces_dir):
+                return False
+                
+            self.known_face_encodings.clear()
+            self.known_face_ids.clear()
+            
+            shutil.rmtree(self.student_faces_dir)
+            os.makedirs(self.student_faces_dir, exist_ok=True)
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error removing all student faces: {str(e)}")
             return False 
