@@ -46,9 +46,9 @@ class BaseRepository:
 		data["updatedAt"] = datetime.datetime.now(datetime.timezone.utc)
 		
 		result = self._entity.insert_one(data)
-		data["_id"] = str(result.inserted_id)
+		data["_id"] = result.inserted_id
 		
-		return data
+		return self._single_serializer(data)
 
 	def update_data(self, id, data):
 		data["updatedAt"] = datetime.datetime.now(datetime.timezone.utc)

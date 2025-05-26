@@ -80,7 +80,7 @@ async def update_handler(
     }
 
     if photo1 and photo2 and photo3:
-        image_paths = students_service.process_student_images(id, photo1, photo2, photo3)
+        image_paths = await students_service.process_student_images(id, photo1, photo2, photo3)
         payload["images"] = image_paths
 
     result = students_service.update_data(id, payload)
@@ -119,9 +119,6 @@ async def create_handler(
     photo2: UploadFile = File(None),
     photo3: UploadFile = File(None)
 ):
-    temp_id = str(ObjectId())
-    image_paths = students_service.process_student_images(temp_id, photo1, photo2, photo3)
-    
     payload = {
         "first_name": first_name,
         "middle_name": middle_name,
@@ -133,11 +130,10 @@ async def create_handler(
         "guardian_relation": guardian_relation,
         "guardian_mobile_number": guardian_mobile_number,
         "section_id": section_id,
-        "is_enabled": is_enabled,
-        "images": image_paths
+        "is_enabled": is_enabled
     }
     
-    result = students_service.create_data(payload, 'first_name')
+    result = students_service.create_data(payload)
     
     if result == ErrorTypes.ALREADY_EXISTS:
         return HTTPResponse(
@@ -152,10 +148,11 @@ async def create_handler(
         )
     
     actual_id = result.get('id')
-    if actual_id:
-        updated_image_paths = students_service.rename_student_images(temp_id, actual_id)
-        if updated_image_paths:
-            result["images"] = updated_image_paths
+    print('actual_id', actual_id)
+    if actual_id and photo1 and photo2 and photo3:
+        image_paths = await students_service.process_student_images(actual_id, photo1, photo2, photo3)
+        if image_paths:
+            result["images"] = image_paths
     
     return HTTPResponse(
         detail=result,

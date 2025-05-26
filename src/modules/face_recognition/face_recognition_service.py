@@ -81,6 +81,7 @@ class FaceRecognitionService:
             bool: True if face was successfully added, False otherwise
         """
         try:
+            print(image_path)
             student_dir = os.path.join(self.student_faces_dir, student_id)
             os.makedirs(student_dir, exist_ok=True)
             

@@ -1,6 +1,7 @@
 from src.database import entities
 from src.modules.base_repository import BaseRepository
 from src.utils.image_utils import get_image_url
+from src.modules.face_recognition.face_recognition_service import FaceRecognitionService
 from datetime import datetime
 import os
 import shutil
@@ -10,6 +11,7 @@ from bson import ObjectId
 class StudentsService(BaseRepository):
     def __init__(self):
         super().__init__(entity=entities.StudentEntity)
+        self.face_service = FaceRecognitionService()
     
     def get_next_student_key(self):
         latest_student = self._entity.find_one(
@@ -51,8 +53,9 @@ class StudentsService(BaseRepository):
         
         return students
     
-    def process_student_images(self, student_id: str, photo1: UploadFile, photo2: UploadFile, photo3: UploadFile):
+    async def process_student_images(self, student_id: str, photo1: UploadFile, photo2: UploadFile, photo3: UploadFile):
         photo_dir = f"public/assets/images/student-face/{student_id}"
+        print(f"Creating directory: {photo_dir}")
         os.makedirs(photo_dir, exist_ok=True)
         
         photo_mapping = {
@@ -64,10 +67,27 @@ class StudentsService(BaseRepository):
         image_paths = {}
         for photo, filename in photo_mapping.items():
             if photo is not None:
-                file_path = f"{photo_dir}/{filename}.jpg"
-                with open(file_path, "wb") as buffer:
-                    shutil.copyfileobj(photo.file, buffer)
-                image_paths[filename] = get_image_url(f"student-face/{student_id}/{filename}.jpg")
+                try:
+                    print(f"Processing {filename} photo")
+                    file_path = f"{photo_dir}/{filename}.jpg"
+                    print(f"Saving to: {file_path}")
+                    
+                    await photo.seek(0)
+                    content = await photo.read()
+                    
+                    with open(file_path, "wb") as buffer:
+                        buffer.write(content)
+                    
+                    image_paths[filename] = get_image_url(f"student-face/{student_id}/{filename}.jpg")
+                    
+                    if filename == "facefront":
+                        self.face_service.add_student_face(student_id, file_path)
+                    
+                    print(f"Saved {filename} successfully")
+                except Exception as e:
+                    print(f"Error processing {filename}: {str(e)}")
+            else:
+                print(f"No photo provided for {filename}")
         
         return image_paths
 
