@@ -3,6 +3,7 @@ import face_recognition
 import numpy as np
 from typing import List, Dict, Tuple, Optional
 from pathlib import Path
+import shutil
 
 class FaceRecognitionService:
     def __init__(self, student_faces_dir: str = "public/assets/images/student-face"):
@@ -78,4 +79,22 @@ class FaceRecognitionService:
             
         except Exception as e:
             print(f"Error adding student face: {str(e)}")
+            return False
+
+    def remove_student_face(self, student_id: str) -> bool:
+        try:
+            student_dir = os.path.join(self.student_faces_dir, student_id)
+            
+            if not os.path.exists(student_dir):
+                return False
+                
+            if student_id in self.known_face_encodings:
+                del self.known_face_encodings[student_id]
+                self.known_face_ids.remove(student_id)
+            
+            shutil.rmtree(student_dir)
+            return True
+            
+        except Exception as e:
+            print(f"Error removing student face: {str(e)}")
             return False 

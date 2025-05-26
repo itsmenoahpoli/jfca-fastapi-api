@@ -51,4 +51,20 @@ async def add_student_face(student_id: str, file: UploadFile = File(...)) -> dic
     except Exception as e:
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/remove-face/{student_id}")
+async def remove_student_face(student_id: str) -> dict:
+    """
+    Remove a student's face from the recognition system
+    """
+    try:
+        success = face_service.remove_student_face(student_id)
+        
+        if success:
+            return {"message": "Face removed successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Student face not found")
+            
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 
