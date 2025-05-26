@@ -12,7 +12,6 @@ class FaceRecognitionService:
         self._load_known_faces()
 
     def _load_known_faces(self) -> None:
-        """Load all known faces from the student faces directory"""
         for student_id in os.listdir(self.student_faces_dir):
             student_path = os.path.join(self.student_faces_dir, student_id)
             if not os.path.isdir(student_path):
@@ -35,15 +34,6 @@ class FaceRecognitionService:
                     print(f"Error loading face for student {student_id}: {str(e)}")
 
     def recognize_face(self, image_path: str) -> Optional[str]:
-        """
-        Recognize a face in the given image and return the student ID if found
-        
-        Args:
-            image_path: Path to the image file containing the face to recognize
-            
-        Returns:
-            Optional[str]: Student ID if a match is found, None otherwise
-        """
         try:
             unknown_image = face_recognition.load_image_file(image_path)
             unknown_face_encodings = face_recognition.face_encodings(unknown_image)
@@ -70,16 +60,6 @@ class FaceRecognitionService:
             return None
 
     def add_student_face(self, student_id: str, image_path: str) -> bool:
-        """
-        Add a new face for a student
-        
-        Args:
-            student_id: ID of the student
-            image_path: Path to the image file containing the face
-            
-        Returns:
-            bool: True if face was successfully added, False otherwise
-        """
         try:
             print(image_path)
             student_dir = os.path.join(self.student_faces_dir, student_id)
